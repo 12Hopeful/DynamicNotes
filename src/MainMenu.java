@@ -31,6 +31,7 @@ public class MainMenu extends JFrame {
 	 * Listeners on buttons carry out a function
 	 */
 	public MainMenu() {
+		setTitle("Dynamic Notes");
 		
 		//Frame
 		setResizable(false);
@@ -42,8 +43,8 @@ public class MainMenu extends JFrame {
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
 		
@@ -84,28 +85,56 @@ public class MainMenu extends JFrame {
 		contentPane.add(btnOpenFlip, gbc_btnOpenFlip);
 		
 		
-		//Button Listeners
-		//New will create a new window for the user to work in
-		//Open will open file explorer so that the use can search for the file they want to open
-		
+		/*
+		 * Button Listeners
+		 * New will create a new window for the user to work in
+		 * Open will open file explorer so that the use can search for the file they want to open
+		*/
 		btnNewNote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				MakeNewNote();
 			}
 		});
 		
 		btnNewFlip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				MakeNewFlip();
 			}
 		});
 		
 		btnOpenNote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				OpenNote();
 			}
 		});
 		
 		btnOpenFlip.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				OpenFlipCard();
 			}
 		});
+	}
+	
+	/*
+	 * Methods to be used to open files and create new notes/cards
+	 */
+	public void MakeNewNote() {
+		NotePadMode newNote = new NotePadMode();
+		newNote.newNote();
+	}
+	
+	public void MakeNewFlip() {
+		//Action to create the new flip card
+		//Call the display method in the new flip card class
+	}
+	
+	public void OpenNote() {
+		//Use file explorer to search for a .txt file to open
+		//May need to take a string as an argument
+	}
+	
+	public void OpenFlipCard() {
+		//Use file explorer to search for a .txt file to open
+		//May need to take a string as an argument
 	}
 }
