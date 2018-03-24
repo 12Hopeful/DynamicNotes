@@ -2,13 +2,9 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Insets;
-
 import javax.swing.*;
-import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledEditorKit;
-
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,7 +13,7 @@ public class NotePadMode extends JFrame {
 	private JPanel contentPane;
 
 	/**
-	 * Load the interface when called
+	 * Create a new note
 	 */
 	public void newNote() {
 		EventQueue.invokeLater(new Runnable() {
@@ -33,13 +29,14 @@ public class NotePadMode extends JFrame {
 	}
 
 	/**
-	 * Create the frame, buttons and text field
+	 * Create the frame, menu, buttons and text field
+	 * Implement listeners to call for button and menu item methods
 	 */
 	public NotePadMode() {
 		setResizable(false);
 		setTitle("Dynamic Notes");
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 400, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
