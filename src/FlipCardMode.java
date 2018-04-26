@@ -4,6 +4,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import javax.swing.*;
@@ -18,16 +19,15 @@ public class FlipCardMode extends JFrame {
 	private BufferedWriter bw;
 	private BufferedReader br;
 	private String fileName;
-	private String[] frontList;
-	private String[] backList;
-	private int cards;
+	private ArrayList<String> frontList = new ArrayList<String>();
+	private ArrayList<String> backList = new ArrayList<String>();
 	private int currentCard;
 	private File file;
 
 	/**
 	 * Create a new flipcard set
 	 */
-	public void newCard() {
+	public void newCards() {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -38,8 +38,6 @@ public class FlipCardMode extends JFrame {
 				}
 			}
 		});
-		cards = 1;
-		currentCard = 1;
 	}
 
 	/**
@@ -49,6 +47,11 @@ public class FlipCardMode extends JFrame {
 	public FlipCardMode() {
 		setResizable(false);
 		setTitle("Dynamic Notes");
+		
+		if(frontList.size() == 0) {
+			frontList.add("");
+			backList.add("");
+		}
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
@@ -96,6 +99,51 @@ public class FlipCardMode extends JFrame {
 		btnFlip.setFont(new Font("Arial", Font.BOLD, 14));
 		btnFlip.setBounds(254, 310, 80, 30);
 		contentPane.add(btnFlip);
+		
+		//Go to the previous card
+		btnPrevious.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frontArea.setVisible(true);
+				backArea.setVisible(false);
+				if(currentCard == 0)
+					return;
+				//Sets the current list elements
+				frontList.set(currentCard, frontArea.getText());
+				backList.set(currentCard, backArea.getText());
+				currentCard --;
+				frontArea.setText(frontList.get(currentCard));
+				backArea.setText(backList.get(currentCard));
+			}
+		});
+		
+		//Go to the next card
+		btnNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				frontArea.setVisible(true);
+				backArea.setVisible(false);
+				if(currentCard+1 == frontList.size())
+					return;
+				frontList.set(currentCard, frontArea.getText());
+				backList.set(currentCard, backArea.getText());
+				currentCard ++;
+				frontArea.setText(frontList.get(currentCard));
+				backArea.setText(backList.get(currentCard));
+			}
+		});
+		
+		//Flip the card
+		btnFlip.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(frontArea.isVisible()) {
+					frontArea.setVisible(false);
+					backArea.setVisible(true);
+				}
+				else if(backArea.isVisible()) {
+					frontArea.setVisible(true);
+					backArea.setVisible(false);
+				}
+			}
+		});
 		
 		/*
 		 * Menu and menu item interfaces
@@ -156,16 +204,24 @@ public class FlipCardMode extends JFrame {
 		});
 		mnNewMenu.add(menuExit);
 	}
+	//End of Flip Card Body
 	
 	/*
 	 * Method to create a new card
+	 * Makes sure that the front side is visible initially
+	 * Increments the current card +1
+	 * Edits the Textarea
+	 * Updates the front and back lists
 	 */
 	public void CreateNewCard() {
-		frontList[currentCard] = frontArea.getText();
-		backList[currentCard] = backArea.getText();
+		frontArea.setVisible(true);
+		backArea.setVisible(false);
+		frontList.add("");
+		backList.add("");
+		frontList.set(currentCard, frontArea.getText());
+		backList.set(currentCard, backArea.getText());
 		frontArea.setText("");
 		backArea.setText("");
-		cards ++;
 		currentCard ++;
 	}
 	
@@ -175,41 +231,26 @@ public class FlipCardMode extends JFrame {
 	 * first card, in which case it moves forward
 	 */
 	public void DeleteCard() {
-		//Removes the currently selected card. Doesn't work if there is only 1 card
-		if(cards == 1)
-			return;
+		frontArea.setVisible(true);
+		backArea.setVisible(false);
 		
-		//If deleting the first card
-		if(currentCard == 1) {
-			frontArea.setText(frontList[1]);
-			backArea.setText(backList[1]);
-			for(int i = 0; i < frontList.length; i++) {
-				frontList[i] = frontList[i+1];
-				backList[i] = backList[i+1];
-			}
-			frontList[frontList.length] = null;
-			backList[backList.length] = null;
+		if(frontList.size() == 1) {
+			frontArea.setText("");
+			backArea.setText("");
 		}
-		//If deleting the last card
-		else if(currentCard == cards) {
-			frontArea.setText(frontList[cards-1]);
-			backArea.setText(backList[cards-1]);
-			frontList[cards] = null;
-			backList[cards] = null;
+		else if(currentCard == 0 && frontList.size() > 1) {
+			frontList.remove(currentCard);
+			backList.remove(currentCard);
+			frontArea.setText(frontList.get(currentCard));
+			backArea.setText(backList.get(currentCard));
 		}
-		//Else middle deletion
-		else {
-			frontArea.setText(frontList[currentCard-1]);
-			backArea.setText(backList[currentCard-1]);
-			for(int i = currentCard-1; i < frontList.length; i++) {
-				frontList[i] = frontList[i+1];
-				backList[i] = backList[i+1];
-			}
-			frontList[frontList.length] = null;
-			backList[backList.length] = null;
+		else{
+			frontList.remove(currentCard);
+			backList.remove(currentCard);
+			currentCard --;
+			frontArea.setText(frontList.get(currentCard));
+			backArea.setText(backList.get(currentCard));
 		}
-		cards --;
-		currentCard --;
 	}
 	
 	/*

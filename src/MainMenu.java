@@ -125,7 +125,7 @@ public class MainMenu extends JFrame {
 	
 	public void MakeNewFlip() {
 		FlipCardMode newCard = new FlipCardMode();
-		newCard.newCard();
+		newCard.newCards();
 	}
 	
 	public void OpenNote() {
