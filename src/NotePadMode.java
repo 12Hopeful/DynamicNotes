@@ -87,7 +87,10 @@ public class NotePadMode extends JFrame {
 		btnB.setFont(new Font("Serif", Font.BOLD, 12));
 		menuBar.add(btnB);
 		
+		
 		JButton btnI = new JButton("I");
+		JButton btnI = new JButton(new StyledEditorKit.ItalicAction());
+		btnI.setText("I");
 		btnI.setFont(new Font("Serif", Font.ITALIC, 12));
 		menuBar.add(btnI);
 		
