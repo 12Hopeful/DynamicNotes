@@ -57,32 +57,18 @@ public class MainMenu extends JFrame {
 		contentPane.add(lblDynamicNotes, gbc_lblDynamicNotes);
 		
 		//Button to create a new note
-		JButton btnNewNote = new JButton("New Note");
+		JButton btnNewNote = new JButton("Note Pad");
 		GridBagConstraints gbc_btnNewNote = new GridBagConstraints();
 		gbc_btnNewNote.gridx = 3;
 		gbc_btnNewNote.gridy = 4;
 		contentPane.add(btnNewNote, gbc_btnNewNote);
 		
 		//Button to create a new flipcard
-		JButton btnNewFlip = new JButton("New Flipcard");
+		JButton btnNewFlip = new JButton("Flipcards");
 		GridBagConstraints gbc_btnNewFlip = new GridBagConstraints();
 		gbc_btnNewFlip.gridx = 5;
 		gbc_btnNewFlip.gridy = 4;
 		contentPane.add(btnNewFlip, gbc_btnNewFlip);
-		
-		//Button to Open a note file
-		JButton btnOpenNote = new JButton("Open Note");
-		GridBagConstraints gbc_btnOpenNote = new GridBagConstraints();
-		gbc_btnOpenNote.gridx = 3;
-		gbc_btnOpenNote.gridy = 6;
-		contentPane.add(btnOpenNote, gbc_btnOpenNote);
-		
-		//Button to open a flipcard file
-		JButton btnOpenFlip = new JButton("Open Flipcard");
-		GridBagConstraints gbc_btnOpenFlip = new GridBagConstraints();
-		gbc_btnOpenFlip.gridx = 5;
-		gbc_btnOpenFlip.gridy = 6;
-		contentPane.add(btnOpenFlip, gbc_btnOpenFlip);
 		
 		
 		/*
@@ -101,18 +87,6 @@ public class MainMenu extends JFrame {
 				MakeNewFlip();
 			}
 		});
-		
-		btnOpenNote.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				OpenNote();
-			}
-		});
-		
-		btnOpenFlip.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				OpenFlipCard();
-			}
-		});
 	}
 	
 	/*
@@ -126,15 +100,5 @@ public class MainMenu extends JFrame {
 	public void MakeNewFlip() {
 		FlipCardMode newCard = new FlipCardMode();
 		newCard.newCards();
-	}
-	
-	public void OpenNote() {
-		//Use file explorer to search for a .txt file to open
-		//May need to take a string as an argument
-	}
-	
-	public void OpenFlipCard() {
-		//Use file explorer to search for a .txt file to open
-		//May need to take a string as an argument
 	}
 }

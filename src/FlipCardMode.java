@@ -1,28 +1,23 @@
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
 import javax.swing.*;
-import java.awt.Font;
 
 public class FlipCardMode extends JFrame {
-
-	private JPanel contentPane;
-	private JTextArea frontArea = new JTextArea();
-	private JTextArea backArea = new JTextArea();
-	private AbstractDocument abDoc;
-	private BufferedWriter bw;
-	private BufferedReader br;
-	private String fileName;
-	private ArrayList<String> frontList = new ArrayList<String>();
-	private ArrayList<String> backList = new ArrayList<String>();
-	private int currentCard;
-	private File file;
+	private JPanel contentPane; //Pane for the displayed graphics
+	private JTextArea frontArea = new JTextArea(); //Area for the front side of the card
+	private JTextArea backArea = new JTextArea(); //Area for the back side of the card
+	private BufferedWriter bw; //Writer to write to a file
+	private String fileName; //The currently accessed file. Stored for use with Save function
+	private ArrayList<String> frontList = new ArrayList<String>(); //The ArrayList of all front of card text
+	private ArrayList<String> backList = new ArrayList<String>(); //The ArrayList of all back of card text
+	private int currentCard; //The card the user is currently viewing. Used for navigation
+	private File file; //File that is being read from or written to
 
 	/**
 	 * Create a new flipcard set
@@ -39,7 +34,7 @@ public class FlipCardMode extends JFrame {
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the frame, menu, buttons and text field
 	 * Implement listeners to call for button and menu item methods
@@ -48,11 +43,13 @@ public class FlipCardMode extends JFrame {
 		setResizable(false);
 		setTitle("Dynamic Notes");
 		
+		//Initialize the array lists
 		if(frontList.size() == 0) {
 			frontList.add("");
 			backList.add("");
 		}
 		
+		//Initialize the Content Frame
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
 		contentPane = new JPanel();
@@ -69,6 +66,9 @@ public class FlipCardMode extends JFrame {
 		frontArea.setBounds(20, 20, 555, 260);
 		frontArea.setMargin(new Insets(10, 10, 10, 10));
 		((AbstractDocument) frontArea.getDocument()).setDocumentFilter(new SizeFilter(500));
+		frontArea.setLineWrap(true);
+		frontArea.setWrapStyleWord(true);
+		frontArea.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "none");
 		contentPane.add(frontArea);
 		
 		backArea.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -76,11 +76,15 @@ public class FlipCardMode extends JFrame {
 		backArea.setBounds(20, 20, 555, 260);
 		backArea.setMargin(new Insets(10, 10, 10, 10));
 		((AbstractDocument) backArea.getDocument()).setDocumentFilter(new SizeFilter(500));
+		backArea.setLineWrap(true);
+		backArea.setWrapStyleWord(true);
+		backArea.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "none");
 		contentPane.add(backArea);
 		backArea.setVisible(false);
 		
 		/*
 		 * Buttons
+		 * Used to navigate between cards and flip the current card
 		 */
 		JButton btnPrevious = new JButton("Prev");
 		btnPrevious.setBackground(Color.WHITE);
@@ -150,10 +154,11 @@ public class FlipCardMode extends JFrame {
 		 * File tab holds options to Save, Save As, Open, and Exit
 		 * New Card: creates a new card and increments the necessary values
 		 * Delete Card: removes a card and changes the needed values
-		 * Save: saves the currently open text to the open .txt file 
-		 * 		If a .txt file is not open, the user is prompted to create the file
-		 * Save: as allows the user to save the current text to a desired location with a desired name as a .txt
+		 * Save: saves the card set to a file 
+		 * 		If a .txt file is not open, the user is prompted to create the file. Redirects to SaveAs
+		 * SaveAs: allows the user to save the current text to a desired location with a desired name as a .txt
 		 * Open: opens a .txt file and loads the stored text to the interface
+		 * 		Parses a saved array list and then separates it into the front and back areas
 		 * Exit: closes the program
 		 */
 		JMenuBar menuBar = new JMenuBar();
@@ -194,6 +199,11 @@ public class FlipCardMode extends JFrame {
 		mnNewMenu.add(menuSaveAs);
 		
 		JMenuItem menuOpen = new JMenuItem("Open");
+		menuOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Open();
+			}
+		});
 		mnNewMenu.add(menuOpen);
 		
 		JMenuItem menuExit = new JMenuItem("Exit");
@@ -258,26 +268,34 @@ public class FlipCardMode extends JFrame {
 	 * If there is no existing file, redirect to the SaveAs function
 	 */
 	public void Save() {
-		if( fileName == null)
+		if( fileName == null) {
 			SaveAs();
+			return;
+		}
 		else {
 			file = new File(fileName);
 		}
 		
-		try {
-	    	bw = new BufferedWriter(new FileWriter(file));
-	    	frontArea.write(bw);
+		frontList.set(currentCard, frontArea.getText());
+		backList.set(currentCard, backArea.getText());
+		
+		//Try saving
+	    try {
+	    	bw = new BufferedWriter(new FileWriter(file, false));
+	        for(int i = 0; i < frontList.size(); i++) {
+	        	bw.write(frontList.get(i));
+	        	bw.newLine();
+	        	bw.write(backList.get(i));
+	        	if(i+1 == frontList.size()) {}
+	        	else
+	        		bw.newLine();
+	        }
+	        bw.close();
 	    }
 	    catch (IOException e){
 	    	e.printStackTrace();
 	    }
-	    finally {
-	         if (bw != null) {
-	            try {
-	               bw.close();
-	            } 
-	            catch (IOException e) {
-	            }}}}
+	}
 	
 	/*
 	 * Save As method to save the current file at a specific location
@@ -291,8 +309,14 @@ public class FlipCardMode extends JFrame {
 	       return;
 	    }
 	    
-	    //Check if file is being saved over
-	    if(fileName == null) {
+	    frontList.set(currentCard, frontArea.getText());
+		backList.set(currentCard, backArea.getText());
+	    
+	    /*
+	     * Check if file is being saved over
+	     * Creates the appropriate file name to be saved to
+	     */
+	    if( fileName == null) {
 	    	file = new File(SaveAs.getSelectedFile() + ".txt");
 	    }
 	    else if(fileName.substring(fileName.length() - 4).equals(".txt")) {
@@ -301,22 +325,53 @@ public class FlipCardMode extends JFrame {
 	    else {
 	    	file = new File(SaveAs.getSelectedFile() + ".txt");
 	    }
+	    fileName = file.getAbsolutePath();//.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("\\")+1); //Store the filename for Save
 	    
-	    fileName = file.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("\\")+1);
-	    bw = null;
-	    
+	    //Save to a file
 	    try {
-	    	bw = new BufferedWriter(new FileWriter(file));
-	    	frontArea.write(bw);
+	        bw = new BufferedWriter(new FileWriter(file, false));
+	        for(int i = 0; i < frontList.size(); i++) {
+	        	bw.write(frontList.get(i));
+	        	bw.newLine();
+	        	bw.write(backList.get(i));
+	        	if(i+1 == frontList.size()) {}
+	        	else
+	        		bw.newLine();
+	        }
+	        bw.close();
 	    }
 	    catch (IOException e){
 	    	e.printStackTrace();
 	    }
-	    finally {
-	         if (bw != null) {
-	            try {
-	               bw.close();
-	            } 
-	            catch (IOException e) {
-	            }}}}
+	}
+	
+	//Method for opening from file
+	public void Open(){
+		final JFileChooser Open = new JFileChooser();
+		Open.setApproveButtonText("Open");
+	    int actionDialog = Open.showOpenDialog(this);
+	    if (actionDialog != JFileChooser.APPROVE_OPTION) {
+	       return;
+	    }
+	    
+	    //Scan by lines and put them into the correct spots
+	    try {
+	    	Scanner s = new Scanner(Open.getSelectedFile());
+	    	frontList.clear();
+	    	backList.clear();
+	    	while(s.hasNextLine()) {
+	    		frontList.add(s.nextLine());
+	    		backList.add(s.nextLine());
+	    		System.out.println("Hi");
+	    	}
+	    	currentCard = 0;
+	    	frontArea.setVisible(true);
+			backArea.setVisible(false);
+	    	frontArea.setText(frontList.get(currentCard));
+	    	backArea.setText(backList.get(currentCard));
+	    }
+	    catch (IOException e){
+	    	e.printStackTrace();
+	    }
+	}
 }
