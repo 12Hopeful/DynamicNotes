@@ -80,6 +80,7 @@ public class NotePadMode extends JFrame {
 		 * Buttons that control font display parameters
 		 * B: bolds the selected text, or enables bold for text that is typed
 		 * I: italicizes the selected text, or enables italics for text that is typed
+		 * S, M, L, XL: changes the size of the selected font to the corresponding font size. 
 		 * Bullets: creates bullet points starting from the currently selected line(s)
 		 */
 		JButton btnB = new JButton(new StyledEditorKit.BoldAction());
@@ -93,6 +94,27 @@ public class NotePadMode extends JFrame {
 		btnI.setText("I");
 		btnI.setFont(new Font("Serif", Font.ITALIC, 12));
 		menuBar.add(btnI);
+
+		JButton btnS = new JButton("S");
+		btnS.setText("S");
+		btnS.setFont(font.setSize(10));
+		menuBar.add(btnS);
+
+		JButton btnM = new JButton("M");
+		btnM.setText("M");
+		btnM.setFont(font.setSize(12));
+		menuBar.add(btnM);
+
+		JButton btnL = new JButton("L");
+		btnL.setText("L");
+		btnL.setFont(font.setSize(18));
+		menuBar.add(btnL);
+
+		JButton btnXL = new JButton("XL");
+		btnXL.setText("XL");
+		btnXL.setFont(font.setSize(24));
+		menuBar.add(btnXL);
+
 		
 		JButton btnBullets = new JButton("Bullets");
 		btnBullets.setFont(new Font("Serif", Font.PLAIN, 12));
