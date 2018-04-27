@@ -58,6 +58,13 @@ public class FlipCardMode extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//scrollpane 
+		scrollpane scroll = new scrollpane();
+		scroll.setSize(100, 600);
+		scroll.setvisible(true);
+		scroll.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
 		/*
 		 * Text Panes
 		 */
