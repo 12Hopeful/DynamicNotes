@@ -49,6 +49,13 @@ public class FlipCardMode extends JFrame {
 			backList.add("");
 		}
 		
+		//scrollpane 
+		scrollpane scroll = new scrollpane();
+		scroll.setBounds(100, 100, 600, 400);
+		scroll.setvisible(true);
+		scroll.setVerticalScrollbarPolicy.JScrollpane.VERTICAL_SCROLLBAR_AS_NEEDED
+		scroll.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
 		//Initialize the Content Frame
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 600, 400);
@@ -57,12 +64,8 @@ public class FlipCardMode extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		contentPane.add(scroll);
 		
-		//scrollpane 
-		scrollpane scroll = new scrollpane();
-		scroll.setSize(100, 600);
-		scroll.setvisible(true);
-		scroll.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
 		/*
