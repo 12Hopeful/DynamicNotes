@@ -316,16 +316,9 @@ public class FlipCardMode extends JFrame {
 	     * Check if file is being saved over
 	     * Creates the appropriate file name to be saved to
 	     */
-	    if( fileName == null) {
-	    	file = new File(SaveAs.getSelectedFile() + ".txt");
-	    }
-	    else if(fileName.substring(fileName.length() - 4).equals(".txt")) {
-	    	file = new File(SaveAs.getSelectedFile() + "");
-	    }
-	    else {
-	    	file = new File(SaveAs.getSelectedFile() + ".txt");
-	    }
-	    fileName = file.getAbsolutePath();//.getAbsolutePath().substring(file.getAbsolutePath().lastIndexOf("\\")+1); //Store the filename for Save
+	    file = new File(SaveAs.getSelectedFile() + ".txt");
+	    	
+	    fileName = file.getAbsolutePath();//Store the filename for Save
 	    
 	    //Save to a file
 	    try {
@@ -354,6 +347,10 @@ public class FlipCardMode extends JFrame {
 	       return;
 	    }
 	    
+	    file = new File(Open.getSelectedFile() + "");
+	    
+	    fileName = file.getAbsolutePath();//Store the filename for Save
+	    
 	    //Scan by lines and put them into the correct spots
 	    try {
 	    	Scanner s = new Scanner(Open.getSelectedFile());
@@ -369,6 +366,7 @@ public class FlipCardMode extends JFrame {
 			backArea.setVisible(false);
 	    	frontArea.setText(frontList.get(currentCard));
 	    	backArea.setText(backList.get(currentCard));
+	    	s.close();
 	    }
 	    catch (IOException e){
 	    	e.printStackTrace();

@@ -1,16 +1,19 @@
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Insets;
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.StyledEditorKit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.Scanner;
 
 public class NotePadMode extends JFrame {
 
 	private JPanel contentPane;
+	JTextPane noteZone = new JTextPane();
+	private BufferedWriter bw; //Writer to write to a file
+	private String fileName; //The currently accessed file. Stored for use with Save function
+	private File file; //File that is being read from or written to
 
 	/**
 	 * Create a new note
@@ -43,8 +46,7 @@ public class NotePadMode extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JTextPane noteZone = new JTextPane();
-		noteZone.setBounds(0, 0, 394, 344);
+		noteZone.setBounds(0, 0, 594, 533);
 		noteZone.setMargin(new Insets(5, 5, 5, 5));
 		contentPane.add(noteZone);
 		
@@ -63,18 +65,37 @@ public class NotePadMode extends JFrame {
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
 		
-		JMenuItem mntmNewMenuItem = new JMenuItem("Save");
-		mnNewMenu.add(mntmNewMenuItem);
+		JMenuItem menuSave = new JMenuItem("Save");
+		menuSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Save();
+			}
+		});
+		mnNewMenu.add(menuSave);
 		
-		JMenuItem mntmSaveAs = new JMenuItem("Save As");
-		mnNewMenu.add(mntmSaveAs);
+		JMenuItem menuSaveAs = new JMenuItem("Save As");
+		menuSaveAs.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SaveAs();
+			}
+		});
+		mnNewMenu.add(menuSaveAs);
 		
-		JMenuItem mntmOpen = new JMenuItem("Open");
-		mnNewMenu.add(mntmOpen);
+		JMenuItem menuOpen = new JMenuItem("Open");
+		menuOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Open();
+			}
+		});
+		mnNewMenu.add(menuOpen);
 		
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mnNewMenu.add(mntmExit);
-		
+		JMenuItem menuExit = new JMenuItem("Exit");
+		menuExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		mnNewMenu.add(menuExit);
 		
 		/*
 		 * Buttons that control font display parameters
@@ -88,24 +109,85 @@ public class NotePadMode extends JFrame {
 		menuBar.add(btnB);
 		
 		
-		JButton btnI = new JButton("I");
 		JButton btnI = new JButton(new StyledEditorKit.ItalicAction());
 		btnI.setText("I");
 		btnI.setFont(new Font("Serif", Font.ITALIC, 12));
 		menuBar.add(btnI);
+	}
+	
+	//Method to save to the currently accessed file
+	public void Save() {
+		if( fileName == null) {
+			SaveAs();
+			return;
+		}
+		else {
+			file = new File(fileName);
+		}
 		
-		JButton btnBullets = new JButton("Bullets");
-		btnBullets.setFont(new Font("Serif", Font.PLAIN, 12));
-		menuBar.add(btnBullets);
-		
-		/*
-		 * Creates a drop menu used to resize text
-		 * Should call a text resize method
-		 */
-		SpinnerModel sm = new SpinnerNumberModel(10, 10, 20, 1);
-		JSpinner fontSize = new JSpinner(sm);
-		Dimension d = new Dimension(45, 50);
-		fontSize.setMaximumSize(d);
-		menuBar.add(fontSize);
+		//Try saving
+	    try {
+	    	bw = new BufferedWriter(new FileWriter(file, false));
+	    	bw.write(noteZone.getText());
+	        bw.close();
+	    }
+	    catch (IOException e){
+	    	e.printStackTrace();
+	    }
+	}
+	
+	//Method to save to a specific directory. Checks that the file is a .txt file
+	public void SaveAs() {
+		final JFileChooser SaveAs = new JFileChooser();
+		SaveAs.setApproveButtonText("Save");
+	    int actionDialog = SaveAs.showOpenDialog(this);
+	    if (actionDialog != JFileChooser.APPROVE_OPTION) {
+	       return;
+	    }
+	    
+	    file = new File(SaveAs.getSelectedFile() + ".txt");
+	    
+	    fileName = file.getAbsolutePath();//Store the filename for Save
+	    
+	    //Save to a file
+	    try {
+	        bw = new BufferedWriter(new FileWriter(file, false));
+	        bw.write(noteZone.getText());
+	        bw.close();
+	    }
+	    catch (IOException e){
+	    	e.printStackTrace();
+	    }
+	}
+	
+	
+	//Method to open a text file
+	public void Open() {
+		final JFileChooser Open = new JFileChooser();
+		Open.setApproveButtonText("Open");
+	    int actionDialog = Open.showOpenDialog(this);
+	    if (actionDialog != JFileChooser.APPROVE_OPTION) {
+	       return;
+	    }
+	    
+	    file = new File(Open.getSelectedFile() + "");
+	    
+	    fileName = file.getAbsolutePath();//Store the filename for Save
+	    
+	    //Scan by lines and put them into the correct spots
+	    try {
+	    	Scanner s = new Scanner(Open.getSelectedFile());
+	    	String str = "";
+	    	
+	    	// keep reading till readLine returns null
+	    	while (s.hasNextLine()) {
+	    	    str = str + s.nextLine() + "\n";
+	    	}
+	    	noteZone.setText(str);
+	    	s.close();
+	    }
+	    catch (IOException e){
+	    	e.printStackTrace();
+	    }
 	}
 }
